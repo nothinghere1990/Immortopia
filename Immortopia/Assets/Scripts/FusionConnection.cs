@@ -7,14 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public static FusionConnection instance {  get; private set; }
+    public static FusionConnection Instance {  get; private set; }
 
     private NetworkRunner networkRunner;
 
     private void Awake()
     {
-        if (instance != null && instance != this) Destroy(this);
-        else instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(this);
     }
 
     private void Start()

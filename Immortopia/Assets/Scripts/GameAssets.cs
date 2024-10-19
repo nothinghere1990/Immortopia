@@ -12,6 +12,5 @@ public class GameAssets : MonoBehaviour
             return _i;
         }
     }
-
-    public Sprite test;
+    
 }
