@@ -121,7 +121,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 119
+  controlID: 122
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -811,9 +811,9 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.082715325, y: -0.0023939672, z: 0.00019944303, w: -0.99657255}
     speed: 2
-    m_Value: {x: -0.082715146, y: -0.0023939621, z: 0.00019944261, w: -0.9965704}
+    m_Value: {x: -0.082715325, y: -0.0023939672, z: 0.00019944303, w: -0.99657255}
   m_Size:
-    m_Target: 296.65936
+    m_Target: 280.60233
     speed: 2
     m_Value: 296.65936
   m_Ortho:
@@ -878,9 +878,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: aee40000
+      m_SelectedIDs: e4550000
       m_LastClickedID: 0
-      m_ExpandedIDs: f29dfeffc89efeff10fbffff82790000d27900002a7a00004a7a0000fcd5000060d6000022d7000050d70000
+      m_ExpandedIDs: 22fbffffd0790000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -950,7 +950,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/UI
+    - Assets/Scripts
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -958,16 +958,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/UI
+  - Assets/Scripts
   m_LastFoldersGridSize: -1
   m_LastProjectPath: "C:\\Users\\john1\\OneDrive\\\u684C\u9762\\\u5927\u4E09\u4F5C\u696D\u5EAB\\Unity\\Immortopia\\Immortopia"
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 14f90000
-    m_LastClickedID: 63764
-    m_ExpandedIDs: 00000000d87a0000da7a0000dc7a0000fe7a000000ca9a3b
+    m_SelectedIDs: 5e7b0000
+    m_LastClickedID: 31582
+    m_ExpandedIDs: 00000000387b00003a7b00003c7b00005e7b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -995,7 +995,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000d87a0000da7a0000dc7a0000
+    m_ExpandedIDs: 00000000387b00003a7b00003c7b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1050,7 +1050,7 @@ MonoBehaviour:
     m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 64
   m_SkipHiddenPackages: 0
-  m_DirectoriesAreaWidth: 185
+  m_DirectoriesAreaWidth: 163
 --- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
