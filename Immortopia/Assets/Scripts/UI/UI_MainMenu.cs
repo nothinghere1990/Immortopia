@@ -1,31 +1,26 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class UI_MainMenu : Scene, IScene
+public class UI_MainMenu : Scene
 {
-    private GameObject startBtn;
-    private GameObject quitBtn;
+    private TMP_Text startBtnText;
+    private Sequence startBtnSequence;
     
-    private void Start()
+    protected override void Start()
     {
-        //Scene Info
-        sceneIndex = scenes.IndexOf(this);
-        
-        startBtn = transform.Find("startButton").gameObject;
-        quitBtn = transform.Find("quitButton").gameObject;
-
         camPos = new Vector3(-7.25f, 8, -7.25f);
         camRot = new Vector3(15, 45, 0);
         
-        LoadScene();
+        base.Start();
     }
 
-    public void LoadScene()
+    public override void LoadScene()
     {
+        base.LoadScene();
         CamMove();
-        ActiveMainMenuBtns();
-        StartGameTextAni();
+        StartGameTextAni(true);
     }
 
     private void CamMove()
@@ -34,24 +29,28 @@ public class UI_MainMenu : Scene, IScene
         cam.DORotate(camRot, camRotSpeed);
     }
     
-    private void ActiveMainMenuBtns()
+    private void StartGameTextAni(bool startLoop)
     {
-        startBtn.SetActive(true);
-        quitBtn.SetActive(true);
+        if (startLoop)
+        {
+            startBtnText = startBtn.GetComponentInChildren<TMP_Text>();
+            startBtnSequence = DOTween.Sequence();
+            
+            startBtnSequence.SetLoops(-1, LoopType.Restart);
+            startBtnSequence.Append(startBtnText.DOFade(0, .7f));
+            startBtnSequence.Append(startBtnText.DOFade(1, .7f));
+        }
+        else
+        {
+            startBtnSequence.Rewind();
+            startBtnSequence.Kill();
+        }
     }
     
-    private void StartGameTextAni()
+    public override void LeaveScene()
     {
-        TMP_Text startBtnText = startBtn.GetComponentInChildren<TMP_Text>();
-        var startBtnSequence = DOTween.Sequence();
-        startBtnSequence.Append(startBtnText.DOFade(0, .7f));
-        startBtnSequence.Append(startBtnText.DOFade(1, .7f)).OnComplete(StartGameTextAni);
-    }
-    
-    public void LeaveScene()
-    {
-        startBtn.SetActive(false);
-        quitBtn.SetActive(false);
+        StartGameTextAni(false);
+        base.LeaveScene();
     }
     
     public void QuitGame()

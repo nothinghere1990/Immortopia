@@ -1,30 +1,27 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class UI_CreateOrJoinRoom : Scene, IScene
+public class UI_CreateOrJoinRoom : Scene
 {
-    private GameObject backBtn;
     private GameObject serverList;
+    private Transform roomTemplate;
     
-    private void Start()
+    protected override void Start()
     {
-        //Scene Info
-        sceneIndex = scenes.IndexOf(this);
-        
-        backBtn = GameObject.Find("backButton");
-        serverList = GameObject.Find("Server List");
+        serverList = content.transform.Find("Server List").gameObject;
+        roomTemplate = serverList.transform.Find("Scroll View/Room Template");
         
         camPos = new Vector3(14, .75f, -5.5f);
         camRot = new Vector3(0, -45, 0);
         
-        LeaveScene();
+        base.Start();
     }
 
-    public void LoadScene()
+    public override void LoadScene()
     {
         camMove();
-        backBtn.SetActive(true);
-        serverList.SetActive(true);
+        base.LoadScene();
+        LoadServerList();
     }
     
     private void camMove()
@@ -32,10 +29,14 @@ public class UI_CreateOrJoinRoom : Scene, IScene
         cam.DOMove(camPos, camMoveSpeed);
         cam.DORotate(camRot, camRotSpeed);
     }
-
-    public void LeaveScene()
+    
+    public void LoadServerList()
     {
-        backBtn.SetActive(false);
-        serverList.SetActive(false);
+        
+    }
+
+    public override void LeaveScene()
+    {
+        base.LeaveScene();
     }
 }
