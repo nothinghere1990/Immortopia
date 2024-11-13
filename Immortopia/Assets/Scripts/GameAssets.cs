@@ -13,4 +13,5 @@ public class GameAssets : MonoBehaviour
         }
     }
     
+    public GameObject sessionTemplatePrefab;
 }

@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f788a4f934468b449edf11fc6809dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startGameAni: {fileID: 7400000, guid: ca8513eb945e1dd41942556b14ffb4b0, type: 2}
+  sessionTemplatePrefab: {fileID: 8728530520298951139, guid: 1b05001dda9ed024c9ba5826e61157ca,
+    type: 3}

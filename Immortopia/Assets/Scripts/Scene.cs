@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Scene : MonoBehaviour, IScene
+public abstract class Scene : NetworkBehaviour, IScene
 {
     public List<Scene> scenes => CustomSceneManager.Instance.scenes;
     public int sceneIndex => scenes.IndexOf(this);

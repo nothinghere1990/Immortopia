@@ -16,19 +16,24 @@ public class CustomSceneManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(this);
+        
+        //Add all scenes to the list before Start() is called.
+        scenes.Add(GameObject.Find("UI Main Menu").GetComponent<Scene>());
+        scenes.Add(GameObject.Find("UI Create or Join Session").GetComponent<Scene>());
+        scenes.Add(GameObject.Find("UI Create Session").GetComponent<Scene>());
     }
 
     public void LoadScene(int inputIndex)
     {
-        scenes[currentSceneIndex].GetComponent<IScene>().LeaveScene();
+        scenes[currentSceneIndex].LeaveScene();
         currentSceneIndex = inputIndex;
-        scenes[currentSceneIndex].GetComponent<IScene>().LoadScene();
+        scenes[currentSceneIndex].LoadScene();
     }
     
     public void LoadLastScene()
     {
-        scenes[currentSceneIndex].GetComponent<IScene>().LeaveScene();
+        scenes[currentSceneIndex].LeaveScene();
         if (currentSceneIndex > 0) currentSceneIndex -= 1;
-        scenes[currentSceneIndex].GetComponent<IScene>().LoadScene();
+        scenes[currentSceneIndex].LoadScene();
     }
 }

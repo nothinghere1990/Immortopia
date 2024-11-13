@@ -1,7 +1,6 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UI_MainMenu : Scene
 {
@@ -12,6 +11,10 @@ public class UI_MainMenu : Scene
     {
         camPos = new Vector3(-7.25f, 8, -7.25f);
         camRot = new Vector3(15, 45, 0);
+        
+        startBtn.onClick.AddListener(() => CustomSceneManager.Instance.LoadScene(sceneIndex + 1));
+        startBtn.onClick.AddListener(() => FusionConnection.Instance.ConnectToLobby("Lobby"));
+        quitBtn.onClick.AddListener(QuitGame);
         
         base.Start();
     }
