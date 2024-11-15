@@ -1,33 +1,35 @@
-using System;
 using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SessionTemplate : UI_CreateOrJoinSession
+public class SessionTemplate : MonoBehaviour
 {
+    private UI_CreateOrJoinSession ui_CreateOrJoinSession;
+    
     private Button sessionBtn;
     
-    private TMP_Text sessionNameText;
-    public TMP_Text playerCountText;
-
     public SessionInfo sessionInfo;
+    
+    private TMP_Text sessionNameText;
+    [HideInInspector] public TMP_Text playerCountText;
 
-    private void Start()
+    //Start() won't execute when session list updated.
+    private void Awake()
     {
+        ui_CreateOrJoinSession = FindObjectOfType<UI_CreateOrJoinSession>();
         sessionBtn = GetComponent<Button>();
         sessionNameText = transform.Find("Session Name").GetComponent<TMP_Text>();
         playerCountText = transform.Find("Player Count").GetComponent<TMP_Text>();
     }
     
-    public void SetupSessionTemplate()
+    public void SetupSessionTemplate(SessionInfo sessionInfo)
     {
-        sessionInfo = FusionConnection.Instance.sessionInfo;
-
-        sessionNameText.text = sessionInfo.Name;
-        playerCountText.text = $"{sessionInfo.PlayerCount.ToString()} / {sessionInfo.MaxPlayers.ToString()}";
+        this.sessionInfo = sessionInfo;
+        sessionNameText.text = this.sessionInfo.Name;
+        playerCountText.text = $"{this.sessionInfo.PlayerCount.ToString()} / {this.sessionInfo.MaxPlayers.ToString()}";
         
-        //Send the clicked session info.
-        sessionBtn.onClick.AddListener(() => GetClickedSession(this));
+        //Send the clicked session info when clicked.
+        sessionBtn.onClick.AddListener(() => ui_CreateOrJoinSession.GetClickedSession(this));
     }
 }

@@ -12,10 +12,13 @@ public class UI_CreateSession : Scene
     
     protected override void Start()
     {
+        createSessionBtn = content.transform.Find("Create Session").GetComponent<Button>();
         createSessionWindow = content.transform.Find("Create Session Window");
         inputSessionName = createSessionWindow.transform.Find("Scroll Area/InputField (TMP)").GetComponent<TMP_InputField>();
         
+        backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
         createSessionBtn.onClick.AddListener(CreateSession);
+        
         base.Start();
     }
 

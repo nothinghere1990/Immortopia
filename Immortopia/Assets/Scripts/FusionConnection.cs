@@ -3,6 +3,7 @@ using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -11,10 +12,10 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner networkRunner;
 
     private string lobbyName;
-    public SessionInfo sessionInfo;
-    
-    public Action OnCreateSession;
-    public Action OnJoinSession;
+    public List<SessionInfo> sessionList;
+
+    public Action onConnectToLobby;
+    public Action onSessionListUpdated;
 
     private void Awake()
     {
@@ -29,39 +30,27 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
     private void Start()
     {
         networkRunner = GetComponent<NetworkRunner>();
-        networkRunner.ProvideInput = true;
     }
 
-    public void ConnectToLobby(string lobbyName)
+    public async void ConnectToLobby(string lobbyName)
     {
+        networkRunner.ProvideInput = true;
         this.lobbyName = lobbyName;
-        networkRunner.JoinSessionLobby(SessionLobby.Custom, this.lobbyName);
+        var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, this.lobbyName);
+        
+        if (result.Ok) onConnectToLobby?.Invoke();
     }
 
     public async void ConnectToSession(string sessionName)
     {
-        var startGameArgs = networkRunner.StartGame(new StartGameArgs
+        await networkRunner.StartGame(new StartGameArgs
         {
             GameMode = GameMode.AutoHostOrClient,
             CustomLobbyName = lobbyName,
             SessionName = sessionName,
-            Scene = SceneRef.FromPath("Scenes/Session"),
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex + 1)
         });
-
-        var result = await startGameArgs;
-
-        if (result.Ok)
-        {
-            sessionInfo = networkRunner.SessionInfo;
-            
-            if (networkRunner.IsServer)
-                OnCreateSession.Invoke();
-            if (networkRunner.IsClient)
-                OnJoinSession.Invoke();
-        }
-        else
-            Debug.LogError($"Failed to start game: {result.ErrorMessage}");
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
@@ -132,6 +121,8 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
+        this.sessionList = sessionList;
+        onSessionListUpdated?.Invoke();
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

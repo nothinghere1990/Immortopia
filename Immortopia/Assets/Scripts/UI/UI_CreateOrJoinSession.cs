@@ -9,9 +9,10 @@ public class UI_CreateOrJoinSession : Scene
     private TMP_Text statusText;
     
     private Button enterCreateSessionBtn;
-    protected Button JoinBtn;
+    private Button joinBtn;
+    private Button refreshBtn;
     
-    private Transform sessionList;
+    private Transform sessionScroll;
     private GameObject SessionTemplatePrefab;
     
     private SessionTemplate clickedSessionTemplate;
@@ -21,19 +22,21 @@ public class UI_CreateOrJoinSession : Scene
         statusText = content.transform.Find("Status Text").GetComponent<TMP_Text>();
         
         enterCreateSessionBtn = content.transform.Find("Enter Create Session").GetComponent<Button>();
-        JoinBtn = content.transform.Find("Join Session").GetComponent<Button>();
+        joinBtn = content.transform.Find("Join Session").GetComponent<Button>();
+        refreshBtn = content.transform.Find("Refresh Session").GetComponent<Button>();
         
-        sessionList = content.transform.Find("Session List/Scroll Area");
+        sessionScroll = content.transform.Find("Session List/Scroll Area");
         SessionTemplatePrefab = GameAssets.i.sessionTemplatePrefab;
         
         camPos = new Vector3(14, .75f, -5.5f);
         camRot = new Vector3(0, -45, 0);
 
+        backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
         enterCreateSessionBtn.onClick.AddListener(() => CustomSceneManager.Instance.LoadScene(sceneIndex + 1));
-        JoinBtn.onClick.AddListener(JoinSession);
+        joinBtn.onClick.AddListener(JoinSession);
+        refreshBtn.onClick.AddListener(RefreshList);
 
-        FusionConnection.Instance.OnCreateSession += RPC_AddToList;
-        FusionConnection.Instance.OnJoinSession += RPC_UpdateList;
+        FusionConnection.Instance.onSessionListUpdated += RefreshList;
         
         base.Start();
     }
@@ -51,61 +54,65 @@ public class UI_CreateOrJoinSession : Scene
         cam.DORotate(camRot, camRotSpeed);
     }
 
-    public void RefreshList()
+    private void RefreshList()
     {
+        Debug.Log("Refresh List");
+        OnLookingForGameSessions();
+        ClearList();
+        AddToList();
+        if (FusionConnection.Instance.sessionList.Count <= 0) OnNoSessionFound();
+        else statusText.gameObject.SetActive(false);
+    }
+    
+    private void ClearList()
+    {
+        if (sessionScroll.childCount <= 0) return;
+        
+        foreach (Transform sessionTemplate in sessionScroll)
+        {
+            Destroy(sessionTemplate.gameObject);
+        }
+    }
+    
+    private void AddToList()
+    {
+        if (FusionConnection.Instance.sessionList == null) return;
+        
+        foreach (SessionInfo sessionInfo in FusionConnection.Instance.sessionList)
+        {
+            SessionTemplate sessionTemplate = Instantiate(SessionTemplatePrefab, sessionScroll.transform).GetComponent<SessionTemplate>();
+            sessionTemplate.SetupSessionTemplate(sessionInfo);
+        }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void RPC_AddToList()
-    {
-        SessionTemplate sessionTemplate = Instantiate(SessionTemplatePrefab, sessionList.transform).GetComponent<SessionTemplate>();
-        sessionTemplate.SetupSessionTemplate();
-    }
-
-    protected void GetClickedSession(SessionTemplate sessionTemplate)
+    public void GetClickedSession(SessionTemplate sessionTemplate)
     {
         clickedSessionTemplate = sessionTemplate;
-        ActiveJoinBtn();
+        ActivejoinBtn();
     }
     
-    protected void ActiveJoinBtn()
+    private void ActivejoinBtn()
     {
         if (clickedSessionTemplate.sessionInfo.PlayerCount >= clickedSessionTemplate.sessionInfo.MaxPlayers)
-            JoinBtn.interactable = false;
+            joinBtn.interactable = false;
         else
-            JoinBtn.interactable = true;
+            joinBtn.interactable = true;
     }
     
-    public void JoinSession()
+    private void JoinSession()
     {
         FusionConnection.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
     }
     
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RPC_UpdateList()
-    {
-        clickedSessionTemplate.playerCountText.text = $"{clickedSessionTemplate.sessionInfo.PlayerCount.ToString()} / {clickedSessionTemplate.sessionInfo.MaxPlayers.ToString()}";
-    }
-
-    public void ClearList()
-    {
-        foreach (Transform sessionTemplate in sessionList)
-        {
-            Destroy(sessionTemplate.gameObject);
-        }
-        
-        statusText.gameObject.SetActive(false);
-    }
-    
     public void OnNoSessionFound()
     {
-        statusText.text = "No game session found";
+        statusText.text = "No session found";
         statusText.gameObject.SetActive(true);
     }
     
     public void OnLookingForGameSessions()
     {
-        statusText.text = "On looking for game sessions";
+        statusText.text = "Looking for sessions";
         statusText.gameObject.SetActive(true);
     }
 
