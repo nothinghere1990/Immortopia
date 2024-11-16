@@ -17,15 +17,18 @@ public class UI_CreateOrJoinSession : Scene
     
     private SessionTemplate clickedSessionTemplate;
     
+    private ProgressBar loadingSessionBar;
+    
     protected override void Start()
     {
-        statusText = content.transform.Find("Status Text").GetComponent<TMP_Text>();
+        statusText = content.Find("Status Text").GetComponent<TMP_Text>();
         
-        enterCreateSessionBtn = content.transform.Find("Enter Create Session").GetComponent<Button>();
-        joinBtn = content.transform.Find("Join Session").GetComponent<Button>();
-        refreshBtn = content.transform.Find("Refresh Session").GetComponent<Button>();
+        enterCreateSessionBtn = content.Find("Enter Create Session").GetComponent<Button>();
+        joinBtn = content.Find("Join Session").GetComponent<Button>();
+        refreshBtn = content.Find("Refresh Session").GetComponent<Button>();
+        loadingSessionBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
         
-        sessionScroll = content.transform.Find("Session List/Scroll Area");
+        sessionScroll = content.Find("Session List/Scroll Area");
         SessionTemplatePrefab = GameAssets.i.sessionTemplatePrefab;
         
         camPos = new Vector3(14, .75f, -5.5f);
@@ -45,6 +48,7 @@ public class UI_CreateOrJoinSession : Scene
     {
         camMove();
         base.LoadScene();
+        loadingSessionBar.gameObject.SetActive(false);
         RefreshList();
     }
 
@@ -60,7 +64,7 @@ public class UI_CreateOrJoinSession : Scene
         OnLookingForGameSessions();
         ClearList();
         AddToList();
-        if (FusionConnection.Instance.sessionList.Count <= 0) OnNoSessionFound();
+        if (FusionConnection.Instance.sessionList == null || FusionConnection.Instance.sessionList.Count <= 0) OnNoSessionFound();
         else statusText.gameObject.SetActive(false);
     }
     
@@ -102,6 +106,12 @@ public class UI_CreateOrJoinSession : Scene
     private void JoinSession()
     {
         FusionConnection.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
+        
+        loadingSessionBar.gameObject.SetActive(true);
+        for (int i = 0; i < loadingSessionBar.maximum; i++)
+        {
+            loadingSessionBar.current = i;
+        }
     }
     
     public void OnNoSessionFound()

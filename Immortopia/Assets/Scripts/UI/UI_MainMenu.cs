@@ -6,16 +6,20 @@ public class UI_MainMenu : Scene
 {
     private TMP_Text startBtnText;
     private Sequence startBtnSequence;
+
+    private ProgressBar LoadingLobbyBar;
     
     protected override void Start()
     {
+        LoadingLobbyBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
+        
         camPos = new Vector3(-7.25f, 8, -7.25f);
         camRot = new Vector3(15, 45, 0);
         
-        startBtn.onClick.AddListener(() => FusionConnection.Instance.ConnectToLobby("Lobby"));
+        startBtn.onClick.AddListener(() => ConnectToLobby(false));
         quitBtn.onClick.AddListener(QuitGame);
         
-        FusionConnection.Instance.onConnectToLobby += () => CustomSceneManager.Instance.LoadScene(sceneIndex + 1);
+        FusionConnection.Instance.onConnectedToLobby += () => ConnectToLobby(true);
         
         base.Start();
     }
@@ -23,6 +27,8 @@ public class UI_MainMenu : Scene
     public override void LoadScene()
     {
         base.LoadScene();
+        LoadingLobbyBar.gameObject.SetActive(false);
+        startBtn.gameObject.SetActive(true);
         CamMove();
         StartGameTextAni(true);
     }
@@ -48,6 +54,27 @@ public class UI_MainMenu : Scene
         {
             startBtnSequence.Rewind();
             startBtnSequence.Kill();
+        }
+    }
+
+    private void ConnectToLobby(bool isDone)
+    {
+        if (isDone)
+        {
+            LoadingLobbyBar.current = LoadingLobbyBar.maximum;
+            CustomSceneManager.Instance.LoadScene(sceneIndex + 1);
+            return;
+        }
+        
+        //Loading
+        startBtn.gameObject.SetActive(false);
+        
+        FusionConnection.Instance.ConnectToLobby("Lobby");
+        
+        LoadingLobbyBar.gameObject.SetActive(true);
+        for (int i = 0; i < LoadingLobbyBar.maximum; i++)
+        {
+            LoadingLobbyBar.current = i;
         }
     }
     

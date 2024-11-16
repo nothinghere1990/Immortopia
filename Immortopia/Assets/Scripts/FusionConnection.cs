@@ -14,7 +14,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
     private string lobbyName;
     public List<SessionInfo> sessionList;
 
-    public Action onConnectToLobby;
+    public Action onConnectedToLobby;
     public Action onSessionListUpdated;
 
     private void Awake()
@@ -38,7 +38,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
         this.lobbyName = lobbyName;
         var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, this.lobbyName);
         
-        if (result.Ok) onConnectToLobby?.Invoke();
+        if (result.Ok) onConnectedToLobby?.Invoke();
     }
 
     public async void ConnectToSession(string sessionName)
@@ -95,8 +95,6 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer) Debug.Log("Server joined");
-        else Debug.Log("Client joined");
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
