@@ -1,3 +1,5 @@
+using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,20 +8,26 @@ public class UI_CreateSession : Scene
 {
     private Transform createSessionWindow;
     private TMP_InputField inputSessionName;
-    private Button createSessionBtn;
+    private Button createSessionBtn, backBtn;
     private ProgressBar loadingSessionBar;
     
-    protected override void Start()
+    protected override void Awake()
     {
+        base.Awake();
+        
+        backBtn = content.Find("Back Button").GetComponent<Button>();
         createSessionBtn = content.Find("Create Session").GetComponent<Button>();
+        
         createSessionWindow = content.Find("Create Session Window");
-        loadingSessionBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
         inputSessionName = createSessionWindow.transform.Find("Scroll Area/InputField (TMP)").GetComponent<TMP_InputField>();
         
+        loadingSessionBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
+    }
+    
+    private void Start()
+    {
         backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
         createSessionBtn.onClick.AddListener(CreateSession);
-        
-        base.Start();
     }
 
     public override void LoadScene()

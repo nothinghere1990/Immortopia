@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using Fusion;
@@ -8,9 +9,7 @@ public class UI_CreateOrJoinSession : Scene
 {
     private TMP_Text statusText;
     
-    private Button enterCreateSessionBtn;
-    private Button joinBtn;
-    private Button refreshBtn;
+    private Button backBtn, enterCreateSessionBtn, joinBtn, refreshBtn;
     
     private Transform sessionScroll;
     private GameObject SessionTemplatePrefab;
@@ -18,11 +17,14 @@ public class UI_CreateOrJoinSession : Scene
     private SessionTemplate clickedSessionTemplate;
     
     private ProgressBar loadingSessionBar;
-    
-    protected override void Start()
+
+    protected override void Awake()
     {
+        base.Awake();
+        
         statusText = content.Find("Status Text").GetComponent<TMP_Text>();
         
+        backBtn = content.Find("Back Button").GetComponent<Button>();
         enterCreateSessionBtn = content.Find("Enter Create Session").GetComponent<Button>();
         joinBtn = content.Find("Join Session").GetComponent<Button>();
         refreshBtn = content.Find("Refresh Session").GetComponent<Button>();
@@ -33,15 +35,16 @@ public class UI_CreateOrJoinSession : Scene
         
         camPos = new Vector3(14, .75f, -5.5f);
         camRot = new Vector3(0, -45, 0);
-
+    }
+    
+    private void Start()
+    {
         backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
         enterCreateSessionBtn.onClick.AddListener(() => CustomSceneManager.Instance.LoadScene(sceneIndex + 1));
         joinBtn.onClick.AddListener(JoinSession);
         refreshBtn.onClick.AddListener(RefreshList);
 
         FusionConnection.Instance.onSessionListUpdated += RefreshList;
-        
-        base.Start();
     }
 
     public override void LoadScene()
@@ -114,13 +117,13 @@ public class UI_CreateOrJoinSession : Scene
         }
     }
     
-    public void OnNoSessionFound()
+    private void OnNoSessionFound()
     {
         statusText.text = "No session found";
         statusText.gameObject.SetActive(true);
     }
     
-    public void OnLookingForGameSessions()
+    private void OnLookingForGameSessions()
     {
         statusText.text = "Looking for sessions";
         statusText.gameObject.SetActive(true);

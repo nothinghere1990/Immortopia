@@ -14,8 +14,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
     private string lobbyName;
     public List<SessionInfo> sessionList;
 
-    public Action onConnectedToLobby;
-    public Action onSessionListUpdated;
+    public Action onConnectedToLobby, onSessionListUpdated, onLoadSceneStarted, onLoadSceneCompleted;
 
     private void Awake()
     {
@@ -25,10 +24,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(this);
-    }
-
-    private void Start()
-    {
+        
         networkRunner = GetComponent<NetworkRunner>();
     }
 
@@ -111,10 +107,12 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
+        onLoadSceneCompleted?.Invoke();
     }
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
+        onLoadSceneStarted?.Invoke();
     }
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)

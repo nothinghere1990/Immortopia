@@ -1,30 +1,25 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public abstract class Scene : MonoBehaviour
 {
-    public List<Scene> scenes => CustomSceneManager.Instance.scenes;
-    public int sceneIndex => scenes.IndexOf(this);
+    protected Transform content;
     
-    public Transform content => transform.Find("Content");
+    protected int sceneIndex => CustomSceneManager.Instance.scenes.IndexOf(this);
     
-    public Transform cam => Camera.main.transform;
+    protected Transform cam;
     public Vector3 camPos, camRot;
-    public float camMoveSpeed => 1f;
-    public float camRotSpeed => 1f;
+    protected float camMoveSpeed => 1f;
+    protected float camRotSpeed => 1f;
     
-    public Button startBtn => content.Find("Start Button").GetComponent<Button>();
-    public Button quitBtn => content.Find("Quit Button").GetComponent<Button>();
-    public Button backBtn => content.Find("Back Button").GetComponent<Button>();
+    protected UI_BlackScreen blackScreen;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
-        //Show only the first scene.
-        if (sceneIndex == 0) LoadScene();
-        else LeaveScene();
+        content = transform.Find("Content");
+        cam = Camera.main.transform;
+        blackScreen = GameObject.Find("UI Black Screen").GetComponent<UI_BlackScreen>();
     }
-
+    
     public virtual void LoadScene()
     {
         content.gameObject.SetActive(true);

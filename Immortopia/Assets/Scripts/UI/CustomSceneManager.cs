@@ -16,8 +16,23 @@ public class CustomSceneManager : MonoBehaviour
             Instance = this;
         }
         else Destroy(this);
+    }
+    
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
         
-        //Add all scenes to the list before Start() is called.
+        FusionConnection.Instance.onLoadSceneCompleted += AddScenes;
+        
+        AddScenes();
+        
+        LoadScene(0);
+    }
+
+    private void AddScenes()
+    {
+        scenes.Clear();
+        
         switch (SceneManager.GetActiveScene().buildIndex)
         {
             case 0:
@@ -26,13 +41,17 @@ public class CustomSceneManager : MonoBehaviour
                 scenes.Add(GameObject.Find("UI Create Session").GetComponent<Scene>());
                 break;
             case 1:
+                scenes.Add(GameObject.Find("UI Session").GetComponent<Scene>());
                 break;
         }
     }
 
     public void LoadScene(int inputIndex)
     {
-        scenes[currentSceneIndex].LeaveScene();
+        foreach (Scene scene in scenes)
+        {
+            scene.LeaveScene();
+        }
         currentSceneIndex = inputIndex;
         scenes[currentSceneIndex].LoadScene();
     }

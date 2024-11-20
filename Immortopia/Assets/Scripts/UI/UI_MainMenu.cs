@@ -1,27 +1,34 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_MainMenu : Scene
 {
+    private Button startBtn, quitBtn;
     private TMP_Text startBtnText;
     private Sequence startBtnSequence;
-
-    private ProgressBar LoadingLobbyBar;
     
-    protected override void Start()
+    private ProgressBar LoadingLobbyBar;
+
+    protected override void Awake()
     {
+        base.Awake();
+        
+        startBtn = content.Find("Start Button").GetComponent<Button>();
+        quitBtn = content.Find("Quit Button").GetComponent<Button>();
         LoadingLobbyBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
         
         camPos = new Vector3(-7.25f, 8, -7.25f);
         camRot = new Vector3(15, 45, 0);
-        
+    }
+
+    private void Start()
+    {
         startBtn.onClick.AddListener(() => ConnectToLobby(false));
         quitBtn.onClick.AddListener(QuitGame);
         
         FusionConnection.Instance.onConnectedToLobby += () => ConnectToLobby(true);
-        
-        base.Start();
     }
 
     public override void LoadScene()
@@ -31,6 +38,7 @@ public class UI_MainMenu : Scene
         startBtn.gameObject.SetActive(true);
         CamMove();
         StartGameTextAni(true);
+        StartCoroutine(blackScreen.FadeOut(.3f));
     }
 
     private void CamMove()
