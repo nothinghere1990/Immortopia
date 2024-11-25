@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UI_MainMenu : Scene
 {
+    public static TMP_InputField PlayerNameInput;
+    
     private Button startBtn, quitBtn;
     private TMP_Text startBtnText;
     private Sequence startBtnSequence;
@@ -15,6 +17,7 @@ public class UI_MainMenu : Scene
     {
         base.Awake();
         
+        PlayerNameInput = content.Find("Player Name Input Field").GetComponent<TMP_InputField>();
         startBtn = content.Find("Start Button").GetComponent<Button>();
         quitBtn = content.Find("Quit Button").GetComponent<Button>();
         LoadingLobbyBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
@@ -25,6 +28,12 @@ public class UI_MainMenu : Scene
 
     private void Start()
     {
+        PlayerNameInput.Select();
+        //Last Player Name
+        if (PlayerPrefs.HasKey("PlayerName"))
+            PlayerNameInput.text = PlayerPrefs.GetString("PlayerName");
+        
+        startBtn.onClick.AddListener(UpdatePlayerName);
         startBtn.onClick.AddListener(() => ConnectToLobby(false));
         quitBtn.onClick.AddListener(QuitGame);
         
@@ -63,6 +72,19 @@ public class UI_MainMenu : Scene
             startBtnSequence.Rewind();
             startBtnSequence.Kill();
         }
+    }
+    
+    private void UpdatePlayerName()
+    {
+        if (string.IsNullOrWhiteSpace(PlayerNameInput.text))
+        {
+            PlayerPrefs.SetString("PlayerName", "Guest");
+            PlayerPrefs.Save();
+            return;
+        }
+        
+        PlayerPrefs.SetString("PlayerName", PlayerNameInput.text);
+        PlayerPrefs.Save();
     }
 
     private void ConnectToLobby(bool isDone)

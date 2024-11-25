@@ -1,11 +1,11 @@
-using System.Collections;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_CreateSession : Scene
 {
+    private TMP_Text playerNameText;
+    
     private Transform createSessionWindow;
     private TMP_InputField inputSessionName;
     private Button createSessionBtn, backBtn;
@@ -15,11 +15,13 @@ public class UI_CreateSession : Scene
     {
         base.Awake();
         
+        playerNameText = content.Find("Player Name").GetComponent<TMP_Text>();
+        
         backBtn = content.Find("Back Button").GetComponent<Button>();
         createSessionBtn = content.Find("Create Session").GetComponent<Button>();
         
         createSessionWindow = content.Find("Create Session Window");
-        inputSessionName = createSessionWindow.transform.Find("Scroll Area/InputField (TMP)").GetComponent<TMP_InputField>();
+        inputSessionName = createSessionWindow.transform.Find("Scroll Area/Session Name Input Field").GetComponent<TMP_InputField>();
         
         loadingSessionBar = content.Find("Loading Bar").GetComponent<ProgressBar>();
     }
@@ -33,6 +35,13 @@ public class UI_CreateSession : Scene
     public override void LoadScene()
     {
         base.LoadScene();
+        
+        //Set player name.
+        if (string.IsNullOrWhiteSpace(UI_MainMenu.PlayerNameInput.text))
+            playerNameText.text = "Guest";
+        else
+            playerNameText.text = UI_MainMenu.PlayerNameInput.text;
+        
         loadingSessionBar.gameObject.SetActive(false);
         createSessionBtn.gameObject.SetActive(true);
         inputSessionName.Select();

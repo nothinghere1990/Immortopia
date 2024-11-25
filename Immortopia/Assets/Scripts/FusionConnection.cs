@@ -91,6 +91,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        //runner.Spawn(); 
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

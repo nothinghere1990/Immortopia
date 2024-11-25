@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class UI_CreateOrJoinSession : Scene
 {
+    private TMP_Text playerNameText;
+    
     private TMP_Text statusText;
     
     private Button backBtn, enterCreateSessionBtn, joinBtn, refreshBtn;
@@ -21,6 +23,8 @@ public class UI_CreateOrJoinSession : Scene
     protected override void Awake()
     {
         base.Awake();
+        
+        playerNameText = content.Find("Player Name").GetComponent<TMP_Text>();
         
         statusText = content.Find("Status Text").GetComponent<TMP_Text>();
         
@@ -51,6 +55,13 @@ public class UI_CreateOrJoinSession : Scene
     {
         camMove();
         base.LoadScene();
+        
+        //Set player name.
+        if (string.IsNullOrWhiteSpace(UI_MainMenu.PlayerNameInput.text))
+            playerNameText.text = "Guest";
+        else
+            playerNameText.text = UI_MainMenu.PlayerNameInput.text;
+        
         loadingSessionBar.gameObject.SetActive(false);
         RefreshList();
     }
