@@ -1,11 +1,10 @@
-using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using Fusion;
 using TMPro;
 using UnityEngine.UI;
 
-public class UI_CreateOrJoinSession : Scene
+public class UI_CreateOrJoinSession : MyScene
 {
     private TMP_Text playerNameText;
     
@@ -43,18 +42,18 @@ public class UI_CreateOrJoinSession : Scene
     
     private void Start()
     {
-        backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
-        enterCreateSessionBtn.onClick.AddListener(() => CustomSceneManager.Instance.LoadScene(sceneIndex + 1));
+        backBtn.onClick.AddListener(FusionSceneManager.Instance.LoadLastSubScene);
+        enterCreateSessionBtn.onClick.AddListener(() => FusionSceneManager.Instance.LoadSubScene(subSceneIndex + 1));
         joinBtn.onClick.AddListener(JoinSession);
         refreshBtn.onClick.AddListener(RefreshList);
 
-        FusionConnection.Instance.onSessionListUpdated += RefreshList;
+        FusionSceneManager.Instance.onSessionListUpdated += RefreshList;
     }
 
-    public override void LoadScene()
+    public override void LoadSubScene()
     {
         camMove();
-        base.LoadScene();
+        base.LoadSubScene();
         
         //Set player name.
         if (string.IsNullOrWhiteSpace(UI_MainMenu.PlayerNameInput.text))
@@ -78,7 +77,9 @@ public class UI_CreateOrJoinSession : Scene
         OnLookingForGameSessions();
         ClearList();
         AddToList();
-        if (FusionConnection.Instance.sessionList == null || FusionConnection.Instance.sessionList.Count <= 0) OnNoSessionFound();
+        if (FusionSceneManager.Instance.sessionList == null || 
+            FusionSceneManager.Instance.sessionList.Count <= 0)
+            OnNoSessionFound();
         else statusText.gameObject.SetActive(false);
     }
     
@@ -94,9 +95,9 @@ public class UI_CreateOrJoinSession : Scene
     
     private void AddToList()
     {
-        if (FusionConnection.Instance.sessionList == null) return;
+        if (FusionSceneManager.Instance.sessionList == null) return;
         
-        foreach (SessionInfo sessionInfo in FusionConnection.Instance.sessionList)
+        foreach (SessionInfo sessionInfo in FusionSceneManager.Instance.sessionList)
         {
             SessionTemplate sessionTemplate = Instantiate(SessionTemplatePrefab, sessionScroll.transform).GetComponent<SessionTemplate>();
             sessionTemplate.SetupSessionTemplate(sessionInfo);
@@ -119,7 +120,7 @@ public class UI_CreateOrJoinSession : Scene
     
     private void JoinSession()
     {
-        FusionConnection.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
+        FusionSceneManager.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
         
         loadingSessionBar.gameObject.SetActive(true);
         for (int i = 0; i < loadingSessionBar.maximum; i++)
@@ -140,8 +141,8 @@ public class UI_CreateOrJoinSession : Scene
         statusText.gameObject.SetActive(true);
     }
 
-    public override void LeaveScene()
+    public override void LeaveSubScene()
     {
-        base.LeaveScene();
+        base.LeaveSubScene();
     }
 }

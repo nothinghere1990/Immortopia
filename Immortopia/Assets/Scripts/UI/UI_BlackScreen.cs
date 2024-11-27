@@ -1,49 +1,63 @@
-using System;
-using System.Collections;
+using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_BlackScreen : Scene
+public class UI_BlackScreen : MyScene
 {
-    private Image blackScreenImage;
+    public static UI_BlackScreen Instance { get; private set; }
     
-    public Action onFadeInComplete, onFadeOutComplete;
+    private Image blackScreenImage;
 
     protected override void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(transform.parent.gameObject);
+        
         blackScreenImage = GetComponentInChildren<Image>();
+        DontDestroyOnLoad(transform.parent);
     }
 
-    private void Start()
+    private async void Start()
     {
-        DontDestroyOnLoad(transform.parent);
-        
-        FusionConnection.Instance.onLoadSceneStarted += () => StartCoroutine(FadeIn(.3f));
+        FusionSceneManager.Instance.onLoadParentSceneStarted += async () => await fadeIn(.3f);
+        FusionSceneManager.Instance.onLoadParentSceneDone += async () => await fadeOut(.3f);
+        await fadeOut(.3f);
     }
     
-    public override void LoadScene()
+    public override void LoadSubScene()
     {
     }
     
-    public IEnumerator FadeIn(float duration)
+    private async Task fadeInAndOut(float fadeInDuration, float fadeOutDuration)
     {
+        await fadeIn(fadeInDuration);
+        await fadeOut(fadeOutDuration);
+    }
+    
+    private async Task fadeIn(float duration)
+    {
+        int durationMs = (int) (duration * 1000);
         blackScreenImage.gameObject.SetActive(true);
         blackScreenImage.DOFade(1f, duration);
-        yield return new WaitForSeconds(duration);
-        onFadeInComplete?.Invoke();
+        await Task.Delay(durationMs);
     }
     
-    public IEnumerator FadeOut(float duration)
+    private async Task fadeOut(float duration)
     {
+        int durationMs = (int) (duration * 1000);
+        
         blackScreenImage.gameObject.SetActive(true);
         blackScreenImage.DOFade(0f, duration);
-        yield return new WaitForSeconds(duration);
+        await Task.Delay(durationMs);
         blackScreenImage.gameObject.SetActive(false);
-        onFadeOutComplete?.Invoke();
     }
     
-    public override void LeaveScene()
+    public override void LeaveSubScene()
     {
     }
 }

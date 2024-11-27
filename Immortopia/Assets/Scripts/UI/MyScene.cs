@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public abstract class Scene : MonoBehaviour
+public abstract class MyScene : MonoBehaviour
 {
     protected Transform content;
     
-    protected int sceneIndex => CustomSceneManager.Instance.scenes.IndexOf(this);
+    protected int subSceneIndex => FusionSceneManager.Instance.subScenes.IndexOf(this);
     
     protected Transform cam;
     public Vector3 camPos, camRot;
@@ -20,12 +20,12 @@ public abstract class Scene : MonoBehaviour
         blackScreen = GameObject.Find("UI Black Screen").GetComponent<UI_BlackScreen>();
     }
     
-    public virtual void LoadScene()
+    public virtual void LoadSubScene()
     {
         content.gameObject.SetActive(true);
     }
 
-    public virtual void LeaveScene()
+    public virtual void LeaveSubScene()
     {
         content.gameObject.SetActive(false);
     }

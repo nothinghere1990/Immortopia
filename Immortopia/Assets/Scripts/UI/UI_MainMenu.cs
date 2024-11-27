@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_MainMenu : Scene
+public class UI_MainMenu : MyScene
 {
     public static TMP_InputField PlayerNameInput;
     
@@ -26,7 +26,7 @@ public class UI_MainMenu : Scene
         camRot = new Vector3(15, 45, 0);
     }
 
-    private void Start()
+    private async void Start()
     {
         PlayerNameInput.Select();
         //Last Player Name
@@ -34,20 +34,19 @@ public class UI_MainMenu : Scene
             PlayerNameInput.text = PlayerPrefs.GetString("PlayerName");
         
         startBtn.onClick.AddListener(UpdatePlayerName);
-        startBtn.onClick.AddListener(() => ConnectToLobby(false));
+        startBtn.onClick.AddListener(ConnectToLobby);
         quitBtn.onClick.AddListener(QuitGame);
         
-        FusionConnection.Instance.onConnectedToLobby += () => ConnectToLobby(true);
+        FusionSceneManager.Instance.onConnectedToLobby += ConnectToLobbySuccess;
     }
 
-    public override void LoadScene()
+    public override void LoadSubScene()
     {
-        base.LoadScene();
+        base.LoadSubScene();
         LoadingLobbyBar.gameObject.SetActive(false);
         startBtn.gameObject.SetActive(true);
         CamMove();
         StartGameTextAni(true);
-        StartCoroutine(blackScreen.FadeOut(.3f));
     }
 
     private void CamMove()
@@ -87,19 +86,11 @@ public class UI_MainMenu : Scene
         PlayerPrefs.Save();
     }
 
-    private void ConnectToLobby(bool isDone)
+    private void ConnectToLobby()
     {
-        if (isDone)
-        {
-            LoadingLobbyBar.current = LoadingLobbyBar.maximum;
-            CustomSceneManager.Instance.LoadScene(sceneIndex + 1);
-            return;
-        }
-        
-        //Loading
         startBtn.gameObject.SetActive(false);
         
-        FusionConnection.Instance.ConnectToLobby("Lobby");
+        FusionSceneManager.Instance.ConnectToLobby();
         
         LoadingLobbyBar.gameObject.SetActive(true);
         for (int i = 0; i < LoadingLobbyBar.maximum; i++)
@@ -108,10 +99,15 @@ public class UI_MainMenu : Scene
         }
     }
     
-    public override void LeaveScene()
+    private void ConnectToLobbySuccess()
+    {
+        LoadingLobbyBar.current = LoadingLobbyBar.maximum;
+    }
+    
+    public override void LeaveSubScene()
     {
         StartGameTextAni(false);
-        base.LeaveScene();
+        base.LeaveSubScene();
     }
     
     public void QuitGame()

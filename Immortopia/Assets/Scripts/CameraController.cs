@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneUnloaded += ActiveCursor;
+        
         camMoveSpeed = 5;
         camZoomSpeed = 7;
         Cursor.lockState = CursorLockMode.Locked;
@@ -37,5 +40,10 @@ public class CameraController : MonoBehaviour
     private void LiftAndDrop(float mouseInputY)
     {
         charCon.Move(mouseInputY * Vector3.up);
+    }
+
+    private void ActiveCursor(Scene scene)
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
 }

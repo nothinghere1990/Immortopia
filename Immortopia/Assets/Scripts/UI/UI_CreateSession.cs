@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_CreateSession : Scene
+public class UI_CreateSession : MyScene
 {
     private TMP_Text playerNameText;
     
@@ -28,13 +28,13 @@ public class UI_CreateSession : Scene
     
     private void Start()
     {
-        backBtn.onClick.AddListener(CustomSceneManager.Instance.LoadLastScene);
+        backBtn.onClick.AddListener(FusionSceneManager.Instance.LoadLastSubScene);
         createSessionBtn.onClick.AddListener(CreateSession);
     }
 
-    public override void LoadScene()
+    public override void LoadSubScene()
     {
-        base.LoadScene();
+        base.LoadSubScene();
         
         //Set player name.
         if (string.IsNullOrWhiteSpace(UI_MainMenu.PlayerNameInput.text))
@@ -47,11 +47,11 @@ public class UI_CreateSession : Scene
         inputSessionName.Select();
     }
     
-    public void CreateSession()
+    private void CreateSession()
     {
         createSessionBtn.gameObject.SetActive(false);
         
-        FusionConnection.Instance.ConnectToSession(inputSessionName.text);
+        FusionSceneManager.Instance.ConnectToSession(inputSessionName.text);
         
         loadingSessionBar.gameObject.SetActive(true);
         for (int i = 0; i < loadingSessionBar.maximum; i++)
@@ -60,8 +60,8 @@ public class UI_CreateSession : Scene
         }
     }
 
-    public override void LeaveScene()
+    public override void LeaveSubScene()
     {
-        base.LeaveScene();
+        base.LeaveSubScene();
     }
 }
