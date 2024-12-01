@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Fusion;
@@ -15,6 +16,8 @@ public class UI_CreateOrJoinSession : MyScene
     private Transform sessionScroll;
     private GameObject SessionTemplatePrefab;
     
+    
+    private List<SessionInfo> sessionList;
     private SessionTemplate clickedSessionTemplate;
     
     private ProgressBar loadingSessionBar;
@@ -45,7 +48,7 @@ public class UI_CreateOrJoinSession : MyScene
         backBtn.onClick.AddListener(FusionSceneManager.Instance.LoadLastSubScene);
         enterCreateSessionBtn.onClick.AddListener(() => FusionSceneManager.Instance.LoadSubScene(subSceneIndex + 1));
         joinBtn.onClick.AddListener(JoinSession);
-        refreshBtn.onClick.AddListener(RefreshList);
+        refreshBtn.onClick.AddListener(() => RefreshList(sessionList));
 
         FusionSceneManager.Instance.onSessionListUpdated += RefreshList;
     }
@@ -62,7 +65,7 @@ public class UI_CreateOrJoinSession : MyScene
             playerNameText.text = UI_MainMenu.PlayerNameInput.text;
         
         loadingSessionBar.gameObject.SetActive(false);
-        RefreshList();
+        RefreshList(sessionList);
     }
 
     private void camMove()
@@ -71,14 +74,15 @@ public class UI_CreateOrJoinSession : MyScene
         cam.DORotate(camRot, camRotSpeed);
     }
 
-    private void RefreshList()
+    private void RefreshList(List<SessionInfo> sessionList)
     {
+        this.sessionList = sessionList;
         Debug.Log("Refresh List");
         OnLookingForGameSessions();
         ClearList();
         AddToList();
-        if (FusionSceneManager.Instance.sessionList == null || 
-            FusionSceneManager.Instance.sessionList.Count <= 0)
+        if (this.sessionList == null || 
+            this.sessionList.Count <= 0)
             OnNoSessionFound();
         else statusText.gameObject.SetActive(false);
     }
@@ -95,9 +99,9 @@ public class UI_CreateOrJoinSession : MyScene
     
     private void AddToList()
     {
-        if (FusionSceneManager.Instance.sessionList == null) return;
+        if (sessionList == null) return;
         
-        foreach (SessionInfo sessionInfo in FusionSceneManager.Instance.sessionList)
+        foreach (SessionInfo sessionInfo in sessionList)
         {
             SessionTemplate sessionTemplate = Instantiate(SessionTemplatePrefab, sessionScroll.transform).GetComponent<SessionTemplate>();
             sessionTemplate.SetupSessionTemplate(sessionInfo);
@@ -144,5 +148,10 @@ public class UI_CreateOrJoinSession : MyScene
     public override void LeaveSubScene()
     {
         base.LeaveSubScene();
+    }
+    
+    private void OnDisable()
+    {
+        FusionSceneManager.Instance.onSessionListUpdated -= RefreshList;
     }
 }

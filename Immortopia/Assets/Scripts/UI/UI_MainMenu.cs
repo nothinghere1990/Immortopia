@@ -115,4 +115,9 @@ public class UI_MainMenu : MyScene
         Debug.Log("quit");
         Application.Quit();
     }
+
+    private void OnDisable()
+    {
+        FusionSceneManager.Instance.onConnectedToLobby -= ConnectToLobbySuccess;
+    }
 }

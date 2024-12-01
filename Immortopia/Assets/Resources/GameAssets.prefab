@@ -46,3 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sessionTemplatePrefab: {fileID: 8728530520298951139, guid: 1b05001dda9ed024c9ba5826e61157ca,
     type: 3}
+  playerWaitingInfoTemplate: {fileID: 8289135996331246009, guid: 4d50711efdc9c10429bb7d2b1972b3c9,
+    type: 3}

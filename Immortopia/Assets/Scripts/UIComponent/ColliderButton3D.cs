@@ -12,6 +12,6 @@ public class ColliderButton3D : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Player" && Input.GetMouseButtonUp(0)) button.onClick.Invoke();
+        if (other.CompareTag("Player") && Input.GetMouseButtonUp(0)) button.onClick.Invoke();
     }
 }

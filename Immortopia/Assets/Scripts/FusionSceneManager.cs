@@ -10,7 +10,7 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public static FusionSceneManager Instance { get; private set; }
 
-    [SerializeField] private NetworkRunner networkRunner;
+    public NetworkRunner networkRunner;
     
     public string lobbyName;
     
@@ -18,10 +18,9 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     public int currentSubSceneIndex;
     public List<MyScene> subScenes;
     
-    public List<SessionInfo> sessionList;
-    
     public Action onConnectedToLobby;
-    public Action onSessionListUpdated, onPlayerJoined;
+    public Action<List<SessionInfo>> onSessionListUpdated;
+    public Action<NetworkRunner, PlayerRef> onPlayerJoined;
     public Action onLoadParentSceneStarted, onLoadParentSceneDone;
     public Action onShotdown;
     
@@ -39,7 +38,7 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private void Start()
     {
-        SceneManager.sceneLoaded += OnParentSceneLoadDone;
+        SceneManager.sceneLoaded += OnLocalParentSceneLoadDone;
         
         lobbyName = "Lobby";
         currentParentSceneIndex = 0;
@@ -135,15 +134,15 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        this.sessionList = sessionList;
-        onSessionListUpdated?.Invoke();
+        //UI_CreateOrJoinSession
+        onSessionListUpdated?.Invoke(sessionList);
     }
     
     public void OnSceneLoadStart(NetworkRunner runner)
     {
     }
     
-    private void OnParentSceneLoadDone(Scene scene, LoadSceneMode mode)
+    private void OnLocalParentSceneLoadDone(Scene scene, LoadSceneMode mode)
     {
         currentParentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         onLoadParentSceneDone?.Invoke();
@@ -170,7 +169,7 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        onPlayerJoined?.Invoke();
+        onPlayerJoined?.Invoke(runner, player);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -181,7 +180,7 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         onShotdown?.Invoke();
     }
-
+    
     public void OnConnectedToServer(NetworkRunner runner)
     {
     }
@@ -232,5 +231,10 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnLocalParentSceneLoadDone;
     }
 }
