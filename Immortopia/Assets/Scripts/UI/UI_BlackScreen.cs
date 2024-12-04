@@ -14,7 +14,7 @@ public class UI_BlackScreen : MyScene
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.parent.gameObject);
         }
         else Destroy(transform.parent.gameObject);
         
@@ -24,8 +24,8 @@ public class UI_BlackScreen : MyScene
 
     private async void Start()
     {
-        FusionSceneManager.Instance.onLoadParentSceneStarted += async () => await fadeIn(.3f);
-        FusionSceneManager.Instance.onLoadParentSceneDone += async () => await fadeOut(.3f);
+        NetworkSceneManager.Instance.onLoadParentSceneStarted += async () => await fadeIn(.3f);
+        NetworkSceneManager.Instance.onLoadParentSceneDone += async () => await fadeOut(.3f);
         await fadeOut(.3f);
     }
     

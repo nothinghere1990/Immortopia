@@ -28,7 +28,7 @@ public class UI_CreateSession : MyScene
     
     private void Start()
     {
-        backBtn.onClick.AddListener(FusionSceneManager.Instance.LoadLastSubScene);
+        backBtn.onClick.AddListener(NetworkSceneManager.Instance.LoadLastSubScene);
         createSessionBtn.onClick.AddListener(CreateSession);
     }
 
@@ -51,7 +51,7 @@ public class UI_CreateSession : MyScene
     {
         createSessionBtn.gameObject.SetActive(false);
         
-        FusionSceneManager.Instance.ConnectToSession(inputSessionName.text);
+        NetworkSceneManager.Instance.ConnectToSession(inputSessionName.text);
         
         loadingSessionBar.gameObject.SetActive(true);
         for (int i = 0; i < loadingSessionBar.maximum; i++)

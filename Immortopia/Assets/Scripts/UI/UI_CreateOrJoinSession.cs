@@ -45,12 +45,12 @@ public class UI_CreateOrJoinSession : MyScene
     
     private void Start()
     {
-        backBtn.onClick.AddListener(FusionSceneManager.Instance.LoadLastSubScene);
-        enterCreateSessionBtn.onClick.AddListener(() => FusionSceneManager.Instance.LoadSubScene(subSceneIndex + 1));
+        backBtn.onClick.AddListener(NetworkSceneManager.Instance.LoadLastSubScene);
+        enterCreateSessionBtn.onClick.AddListener(() => NetworkSceneManager.Instance.LoadSubScene(subSceneIndex + 1));
         joinBtn.onClick.AddListener(JoinSession);
         refreshBtn.onClick.AddListener(() => RefreshList(sessionList));
 
-        FusionSceneManager.Instance.onSessionListUpdated += RefreshList;
+        NetworkSceneManager.Instance.onSessionListUpdated += RefreshList;
     }
 
     public override void LoadSubScene()
@@ -77,7 +77,6 @@ public class UI_CreateOrJoinSession : MyScene
     private void RefreshList(List<SessionInfo> sessionList)
     {
         this.sessionList = sessionList;
-        Debug.Log("Refresh List");
         OnLookingForGameSessions();
         ClearList();
         AddToList();
@@ -124,7 +123,7 @@ public class UI_CreateOrJoinSession : MyScene
     
     private void JoinSession()
     {
-        FusionSceneManager.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
+        NetworkSceneManager.Instance.ConnectToSession(clickedSessionTemplate.sessionInfo.Name);
         
         loadingSessionBar.gameObject.SetActive(true);
         for (int i = 0; i < loadingSessionBar.maximum; i++)
@@ -152,6 +151,6 @@ public class UI_CreateOrJoinSession : MyScene
     
     private void OnDisable()
     {
-        FusionSceneManager.Instance.onSessionListUpdated -= RefreshList;
+        NetworkSceneManager.Instance.onSessionListUpdated -= RefreshList;
     }
 }

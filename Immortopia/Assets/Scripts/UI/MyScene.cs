@@ -5,7 +5,7 @@ public abstract class MyScene : MonoBehaviour
 {
     protected Transform content;
     
-    protected int subSceneIndex => FusionSceneManager.Instance.subScenes.IndexOf(this);
+    protected int subSceneIndex => NetworkSceneManager.Instance.subScenes.IndexOf(this);
     
     protected Transform cam;
     public Vector3 camPos, camRot;

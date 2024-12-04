@@ -2919,6 +2919,7 @@ GameObject:
   - component: {fileID: 1417751498}
   - component: {fileID: 1417751499}
   - component: {fileID: 1417751500}
+  - component: {fileID: 1417751501}
   m_Layer: 0
   m_Name: Network Game Manager
   m_TagString: Untagged
@@ -2965,10 +2966,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bc7544efe123f04cb6b10428a4c7f80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkRunner: {fileID: 0}
   lobbyName: 
   currentParentSceneIndex: 0
   currentSubSceneIndex: 0
   subScenes: []
+--- !u!114 &1417751501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417751497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a07540aae958544abf90bccb5a69a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1432983973
 GameObject:
   m_ObjectHideFlags: 0

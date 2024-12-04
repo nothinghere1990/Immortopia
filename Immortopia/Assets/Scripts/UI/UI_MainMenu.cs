@@ -37,7 +37,7 @@ public class UI_MainMenu : MyScene
         startBtn.onClick.AddListener(ConnectToLobby);
         quitBtn.onClick.AddListener(QuitGame);
         
-        FusionSceneManager.Instance.onConnectedToLobby += ConnectToLobbySuccess;
+        NetworkSceneManager.Instance.onConnectedToLobby += ConnectToLobbySuccess;
     }
 
     public override void LoadSubScene()
@@ -90,7 +90,7 @@ public class UI_MainMenu : MyScene
     {
         startBtn.gameObject.SetActive(false);
         
-        FusionSceneManager.Instance.ConnectToLobby();
+        NetworkSceneManager.Instance.ConnectToLobby();
         
         LoadingLobbyBar.gameObject.SetActive(true);
         for (int i = 0; i < LoadingLobbyBar.maximum; i++)
@@ -118,6 +118,6 @@ public class UI_MainMenu : MyScene
 
     private void OnDisable()
     {
-        FusionSceneManager.Instance.onConnectedToLobby -= ConnectToLobbySuccess;
+        NetworkSceneManager.Instance.onConnectedToLobby -= ConnectToLobbySuccess;
     }
 }

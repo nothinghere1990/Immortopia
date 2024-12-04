@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class PlayerWaitingInfoNetwork : NetworkBehaviour
 {
-    [Networked, OnChangedRender(nameof(OnPlayerIndexChanged))] 
-    private NetworkString<_4> playerIndexNetwork { get; set; }
+    [Networked, OnChangedRender(nameof(OnPlayerInfoChanged))] 
+    private int playerIndexNetwork { get; set; }
+    
+    private TMP_Text playerIndexText;
+    
+    private void Awake()
+    {
+        playerIndexText = transform.Find("Player Index").GetComponent<TMP_Text>();
+    }
     
     private void Start()
     {
-        OnPlayerIndexChanged();
+        OnPlayerInfoChanged();
     }
     
     public override void Spawned()
@@ -22,14 +29,24 @@ public class PlayerWaitingInfoNetwork : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_SetPlayerWaitingInfo()
     {
-        Debug.Log("bruh");
-        
-        playerIndexNetwork = Object.InputAuthority.PlayerId.ToString();
+        playerIndexNetwork = NetworkPlayerManager.Instance.playerList.
+            FindIndex(playerInfo => playerInfo.player == Object.InputAuthority) + 1;
     }
     
-    private void OnPlayerIndexChanged()
+    private void OnPlayerInfoChanged()
     {
-        transform.Find("Player Index").GetComponent<TMP_Text>().text =
-            $"P{playerIndexNetwork.ToString()}";
-    }
+        transform.SetParent(GameObject.Find("UI Waiting Room/Content").transform);
+        transform.localRotation = Quaternion.Euler(new Vector3(90f, 0f, 0f));
+        transform.localScale = Vector3.one;
+        transform.localPosition = playerIndexNetwork switch
+        {
+            1 => new Vector3(0f, -1f, 7f),
+            2 => new Vector3(9.5f, -1f, 0f),
+            3 => new Vector3(0f, -1f, -7f),
+            4 => new Vector3(-9.5f, -1f, 0f),
+            _ => transform.position
+        };
+        
+        playerIndexText.text = $"P{playerIndexNetwork.ToString()}";
+    } 
 }

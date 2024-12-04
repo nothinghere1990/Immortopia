@@ -6,9 +6,9 @@ using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
+public class NetworkSceneManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public static FusionSceneManager Instance { get; private set; }
+    public static NetworkSceneManager Instance { get; private set; }
 
     public NetworkRunner networkRunner;
     
@@ -20,7 +20,6 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     
     public Action onConnectedToLobby;
     public Action<List<SessionInfo>> onSessionListUpdated;
-    public Action<NetworkRunner, PlayerRef> onPlayerJoined;
     public Action onLoadParentSceneStarted, onLoadParentSceneDone;
     public Action onShotdown;
     
@@ -169,7 +168,6 @@ public class FusionSceneManager : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        onPlayerJoined?.Invoke(runner, player);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
